@@ -20,7 +20,7 @@ CREATE TABLE user_schedules (
 );
 
 -- 그룹 테이블
-CREATE TABLE `groups` (
+CREATE TABLE groups_table (
                           group_id INT AUTO_INCREMENT PRIMARY KEY,
                           name VARCHAR(100) NOT NULL,
                           course VARCHAR(100) NOT NULL
@@ -31,7 +31,7 @@ CREATE TABLE group_members (
                                group_id INT NOT NULL,
                                user_id INT NOT NULL,
                                PRIMARY KEY (group_id, user_id),
-                               FOREIGN KEY (group_id) REFERENCES `groups`(group_id),
+                               FOREIGN KEY (group_id) REFERENCES groups_table(group_id),
                                FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE group_schedules (
                                  day_of_week VARCHAR(20) NOT NULL,
                                  start_time TIME NOT NULL,
                                  end_time TIME NOT NULL,
-                                 FOREIGN KEY (group_id) REFERENCES `groups`(group_id)
+                                 FOREIGN KEY (group_id) REFERENCES groups_table(group_id)
 );
 
 -- 그룹 업무
@@ -54,7 +54,7 @@ CREATE TABLE group_tasks (
                              status VARCHAR(20) NOT NULL,
                              due_date DATE,
                              FOREIGN KEY (assigned_user_id) REFERENCES users(user_id),
-                             FOREIGN KEY (group_id) REFERENCES `groups`(group_id)
+                             FOREIGN KEY (group_id) REFERENCES groups_table(group_id)
 );
 
 -- 강의실 시간표
@@ -65,5 +65,5 @@ CREATE TABLE meeting_room_schedules (
                                         day_of_week VARCHAR(20) NOT NULL,
                                         start_time TIME NOT NULL,
                                         end_time TIME NOT NULL,
-                                        FOREIGN KEY (group_id) REFERENCES `groups`(group_id)
+                                        FOREIGN KEY (group_id) REFERENCES groups_table(group_id)
 );
