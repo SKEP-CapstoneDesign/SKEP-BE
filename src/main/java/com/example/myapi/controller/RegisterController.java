@@ -1,9 +1,9 @@
 package com.example.myapi.controller;
 
-import com.example.myapi.dto.ErrorResponse;
-import com.example.myapi.dto.SignupRequest;
-import com.example.myapi.dto.SignupResponse;
 import com.example.myapi.Service.EmailService;
+import com.example.myapi.dto.*;
+import com.example.myapi.entity.User;
+import com.example.myapi.repository.UserRepository;
 import com.example.myapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +20,9 @@ public class RegisterController {
 
     private final EmailService emailService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    //  이메일 인증 코드 전송
+    // ✅ 이메일 인증 코드 전송
     @PostMapping("/send-email")
     public ResponseEntity<String> sendMail(@RequestBody Map<String, String> request) {
         String to = request.get("to");
@@ -34,12 +36,7 @@ public class RegisterController {
         }
     }
 
-    //  인증 코드 생성
-    private String generateCode() {
-        return String.valueOf((int)(Math.random() * 900000) + 100000);
-    }
-
-    // 이메일 인증 코드 검증
+    // ✅ 이메일 인증 코드 검증
     @PostMapping("/verify-email")
     public ResponseEntity<String> verifyCode(@RequestBody Map<String, String> request) {
         String to = request.get("to");
@@ -48,7 +45,12 @@ public class RegisterController {
         return ResponseEntity.ok(result ? "인증 성공!" : "인증 실패!");
     }
 
-    //  회원가입 처리
+    // ✅ 인증 코드 생성
+    private String generateCode() {
+        return String.valueOf((int)(Math.random() * 900000) + 100000);
+    }
+
+    // ✅ 회원가입 처리
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
         try {
@@ -66,5 +68,21 @@ public class RegisterController {
         }
     }
 
+    // ✅ 로그인 처리
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        if (request.getEmail() == null || request.getPassword() == null) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Invalid request", "이메일 혹은 비밀번호 미입력"));
+        }
 
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+
+        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ErrorResponse("Unauthorized", "잘못된 이메일 혹은 비밀번호"));
+        }
+
+        User user = userOpt.get();
+        return ResponseEntity.ok(new LoginResponse(user.getId(), user.getNickname(), "로그인 성공"));
+    }
 }
