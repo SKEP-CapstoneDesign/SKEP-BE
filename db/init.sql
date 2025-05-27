@@ -3,21 +3,22 @@ USE SKEP_db;
 
 -- 사용자 테이블
 CREATE TABLE users (
-                       user_id INT AUTO_INCREMENT PRIMARY KEY,
+                       user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                        password VARCHAR(255) NOT NULL,
                        nickname VARCHAR(50) NOT NULL,
                        email VARCHAR(100) NOT NULL UNIQUE
 );
 
--- 사용자시간표
+-- 사용자 시간표
 CREATE TABLE user_schedules (
-                                schedule_id INT AUTO_INCREMENT PRIMARY KEY,
-                                user_id INT NOT NULL,
+                                schedule_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                user_id BIGINT NOT NULL,
                                 day_of_week VARCHAR(20) NOT NULL,
                                 start_time TIME NOT NULL,
                                 end_time TIME NOT NULL,
                                 FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
 
 -- 그룹 테이블
 CREATE TABLE groups_table (
