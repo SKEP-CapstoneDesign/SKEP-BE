@@ -127,7 +127,7 @@ public class GroupController {
     @PostMapping("/{groupId}/invite")
     public ResponseEntity<?> inviteUser(@PathVariable Long groupId, @RequestBody Map<String, String> req) {
         try {
-            String email = req.get("user_email");
+            String email = req.get("email");
 
             if (email == null || email.isBlank()) {
                 return ResponseEntity.badRequest().body(Map.of(
