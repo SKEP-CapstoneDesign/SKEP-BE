@@ -16,6 +16,15 @@ services:
     networks:
       - skep-network
 
+  redis:
+    image: redis:7.2
+    container_name: skep-redis
+    restart: always
+    ports:
+      - "6380:6379"
+    networks:
+      - skep-network
+
 volumes:
   skep_mysql_data:
 
