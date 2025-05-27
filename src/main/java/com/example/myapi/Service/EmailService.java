@@ -27,7 +27,7 @@ public class EmailService {
 
         mailSender.send(message);
 
-        // Redis에 인증 코드 저장 (3분 유효)
+        // Redis에 코드 저장 (3분 유효)
         redisTemplate.opsForValue().set(to, code, 3, TimeUnit.MINUTES);
     }
 
