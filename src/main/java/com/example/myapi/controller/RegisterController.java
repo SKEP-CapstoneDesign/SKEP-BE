@@ -1,6 +1,6 @@
 package com.example.myapi.controller;
 
-import com.example.myapi.Service.EmailService;
+import com.example.myapi.service.EmailService;
 import com.example.myapi.dto.*;
 import com.example.myapi.entity.User;
 import com.example.myapi.repository.UserRepository;
@@ -47,7 +47,7 @@ public class RegisterController {
 
     // ✅ 인증 코드 생성
     private String generateCode() {
-        return String.valueOf((int)(Math.random() * 900000) + 100000);
+        return String.valueOf((int) (Math.random() * 900000) + 100000);
     }
 
     // ✅ 회원가입 처리
@@ -68,21 +68,24 @@ public class RegisterController {
         }
     }
 
-    // ✅ 로그인 처리
+    // ✅ 로그인 처리 (JWT 발급 포함)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        if (request.getEmail() == null || request.getPassword() == null) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Invalid request", "이메일 혹은 비밀번호 미입력"));
-        }
-
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-
-        if (userOpt.isEmpty() || !userOpt.get().getPassword().equals(request.getPassword())) {
+        try {
+            LoginResponse response = userService.login(request);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Unauthorized", "잘못된 이메일 혹은 비밀번호"));
+                    .body(new ErrorResponse("Unauthorized", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Internal Server Error", "서버 오류가 발생했습니다."));
         }
-
-        User user = userOpt.get();
-        return ResponseEntity.ok(new LoginResponse(user.getId(), user.getNickname(), "로그인 성공"));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok(Map.of("message", "Logout successful"));
+    }
+
 }
