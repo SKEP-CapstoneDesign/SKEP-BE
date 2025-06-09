@@ -1,26 +1,23 @@
 package com.example.myapi.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Getter
-@NoArgsConstructor
+@Table(name = "users")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId; // master 브랜치에서는 'id', Feat-GroupsAPI에서는 'userId'
 
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false)
     private String nickname;
+
+    @Column(nullable = false)
     private String password;
-
-    public User(String email, String nickname, String password) {
-        this.email = email;
-        this.nickname = nickname;
-        this.password = password;
-    }
 }
-
