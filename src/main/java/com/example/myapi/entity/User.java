@@ -14,7 +14,9 @@ public class User {
     private Long id;
 
     private String email;
+
     private String nickname;
+
     private String password;
 
     public User(String email, String nickname, String password) {
@@ -23,7 +25,17 @@ public class User {
         this.password = password;
     }
 
+    // 닉네임 수정 메서드
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
+    // ✅ 비밀번호 수정 메서드 추가
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
-

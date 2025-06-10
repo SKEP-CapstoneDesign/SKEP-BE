@@ -1,9 +1,12 @@
 package com.example.myapi.exception;
 
 import com.example.myapi.dto.ErrorResponse;
+import com.example.myapi.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,6 +23,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("Unauthorized", e.getMessage()));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException e) {
+        HttpStatus status = (HttpStatus) e.getStatusCode(); // 👈 캐스팅 필요
+
+        return ResponseEntity
+                .status(status)
+                .body(new ErrorResponse(
+                        status.name(),
+                        e.getReason()
+                ));
     }
 
     @ExceptionHandler(Exception.class)
