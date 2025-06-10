@@ -13,4 +13,13 @@ public class GroupMember {
 
     @Id
     private Long userId;
+
+    public Long getUserId() {
+        return this.userId;
+    }
+
+    public Long getGroupId() {
+        return this.groupId;
+    }
+
 }

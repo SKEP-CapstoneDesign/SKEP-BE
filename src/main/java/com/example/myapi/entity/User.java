@@ -8,6 +8,7 @@ import lombok.*;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -26,6 +27,10 @@ public class User {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+    }
+
+    public Long getId() {
+        return this.userId;
     }
 
     // 닉네임 수정 메서드
